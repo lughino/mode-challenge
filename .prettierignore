@@ -1,0 +1,17 @@
+node_modules/
+yarn.lock
+*.snap
+.prettierignore
+.eslintignore
+
+client/*/dist
+client/*/reports
+server/*/dist
+server/*/reports
+
+client/.next/
+client/out_publish
+client/out_functions
+
+**/dist/*
+**/reports/*
