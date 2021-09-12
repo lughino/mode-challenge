@@ -1,3 +1,4 @@
-export interface Operation<T> {
-  execute(...params: any): T;
+/* eslint-disable unicorn/filename-case */
+export interface Operation {
+  execute(...params: unknown[]): unknown;
 }

@@ -41,6 +41,7 @@ const typescript = {
     'prettier',
   ],
   rules: {
+    'no-void': 0,
     'no-use-before-define': 0,
     'implicit-arrow-linebreak': 0,
     'operator-linebreak': 0,
