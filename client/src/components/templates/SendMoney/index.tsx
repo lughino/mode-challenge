@@ -8,7 +8,7 @@ import { Column } from '../../atoms/Column';
 import { Title } from '../../atoms/Title';
 import { SendMoneyForm } from '../../organisms/SendMoneyForm';
 import { useCreateTransaction, useUiContext } from '../../../hooks';
-import { TransactionDto, Wallet, Transaction } from '../../../types';
+import { TransactionDto, Wallet, Transaction, TransactionType } from '../../../types';
 
 export interface SendMoneyProps {
   wallet: Wallet;
@@ -60,7 +60,7 @@ const MediaColumn = styled(Column)`
 export const SendMoney: React.FunctionComponent<SendMoneyProps> = ({ wallet }) => {
   const { modalStatus, toggleModal } = useUiContext();
   const queryClient = useQueryClient();
-  const { mutate, isLoading } = useCreateTransaction<{ optimisticTransaction: Transaction }>({
+  const { mutate, isLoading } = useCreateTransaction<{ optimisticTransaction: Transaction; newBalance: number }>({
     onMutate: async (variables) => {
       await queryClient.cancelQueries('transactions');
 
@@ -75,13 +75,28 @@ export const SendMoney: React.FunctionComponent<SendMoneyProps> = ({ wallet }) =
         optimisticTransaction,
         ...old!,
       ]);
+      const newBalance =
+        optimisticTransaction.type === TransactionType.DEBIT
+          ? wallet.balance - optimisticTransaction.amount
+          : wallet.balance + optimisticTransaction.amount;
+      queryClient.setQueryData<Wallet>(
+        ['wallet', wallet.id],
+        (oldWallet): Wallet => ({
+          ...oldWallet!,
+          balance: newBalance,
+        }),
+      );
 
-      return { optimisticTransaction };
+      return { optimisticTransaction, newBalance };
     },
     onSuccess: (result, variables, context) => {
       queryClient.setQueryData<Transaction[]>(['transactions', wallet.id], (old) =>
         old!.map((transaction) => (transaction.id === context?.optimisticTransaction.id ? result : transaction)),
       );
+      queryClient.setQueryData<Wallet>(['wallet', wallet.id], (oldWallet) => ({
+        ...oldWallet!,
+        balance: (result as any).wallet.balance,
+      }));
       toggleModal();
     },
   });

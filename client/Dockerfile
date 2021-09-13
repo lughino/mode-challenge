@@ -25,10 +25,10 @@ RUN addgroup -g 1001 -S nodejs
 RUN adduser -S nextjs -u 1001
 
 COPY --from=build /usr/src/monorepo/client/next.config.js /usr/src/app/
-COPY --from=build /usr/src/monorepo/client/public /usr/src/app/
-COPY --from=build --chown=nextjs:nodejs /usr/src/monorepo/client/.next /usr/src/app/
-COPY --from=build /usr/src/monorepo/node_modules/ /usr/src/app/node_modules/
+COPY --from=build /usr/src/monorepo/client/public /usr/src/app/public/
+COPY --from=build --chown=nextjs:nodejs /usr/src/monorepo/client/.next /usr/src/app/.next/
 COPY --from=build /usr/src/monorepo/client/node_modules/ /usr/src/app/node_modules/
+COPY --from=build /usr/src/monorepo/node_modules/ /usr/src/app/node_modules/
 COPY --from=build /usr/src/monorepo/client/package.json /usr/src/app/
 
 USER nextjs

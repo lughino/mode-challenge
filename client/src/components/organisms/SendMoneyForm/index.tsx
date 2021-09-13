@@ -93,37 +93,59 @@ export const SendMoneyForm: FunctionComponent<SendMoneyFormProps> = ({
   const validateSingle = (field: string, value: unknown): string =>
     validate.single(value, getValidationConstraints(amountLeft, state.transaction.type)[field]);
 
-  const validateForm = (transaction: TransactionDto): boolean =>
-    validate(transaction, getValidationConstraints(amountLeft, transaction.type));
+  const validateForm = (transaction: TransactionDto): Record<string, string> | undefined => {
+    const errors = validate(transaction, getValidationConstraints(amountLeft, transaction.type));
+    if (!errors) {
+      return;
+    }
+
+    // eslint-disable-next-line consistent-return
+    return Object.entries(errors).reduce((acc, v) => {
+      const [key, value] = v;
+      if (Array.isArray(value)) {
+        // eslint-disable-next-line prefer-destructuring
+        acc[key] = value[0];
+      }
+
+      return acc;
+    }, {} as Record<string, string>);
+  };
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
 
     setState((prevState) => {
-      const error = validateSingle(name, value);
+      const errors = validateForm({
+        ...prevState.transaction,
+        [name]: value,
+      });
 
       return {
         ...prevState,
         errors: {
-          ...prevState.errors,
-          [name]: error,
+          ...(errors || {}),
         },
         transaction: {
           ...prevState.transaction,
           [name]: value,
         },
-        hasErrors: !!error,
+        hasErrors: !!errors,
       };
     });
   };
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const hasErrors = !!validateForm(state.transaction);
-    if (hasErrors) {
+    const errors = validateForm(state.transaction);
+
+    if (errors) {
       setState((prevState) => ({
         ...prevState,
-        hasErrors,
+        errors: {
+          ...prevState.errors,
+          ...errors,
+        },
+        hasErrors: !!errors,
       }));
       return;
     }
