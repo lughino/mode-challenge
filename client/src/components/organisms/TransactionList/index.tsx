@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { SubTitle } from '../../atoms/SubTitle';
 import { TransactionItem } from '../../molecules/TransactionItem';
 import { Transaction } from '../../../types';
+import { media } from '../../../theme';
 
 export interface TransactionListProps {
   transactions: Transaction[];
@@ -13,6 +14,11 @@ const Wrapper = styled.div`
 `;
 const List = styled.div`
   overflow-y: scroll;
+
+  @media (min-width: ${media.maxPhone}) {
+    max-height: 55vh;
+    box-shadow: rgba(0, 0, 0, 0.04) 0px 3px 5px;
+  }
 `;
 const NoItem = styled.div``;
 

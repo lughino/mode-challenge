@@ -14,7 +14,7 @@ const dateFormatter = new Intl.DateTimeFormat('en-GB', {
   minute: 'numeric',
 });
 
-export const dateHumanFormatter = (date: string) => dateFormatter.format(new Date(date));
+export const dateHumanFormatter = (date: string | Date) => dateFormatter.format(new Date(date));
 
 export const currencyFormatter = (amount: number) => gbFormatter.format(amount);
 

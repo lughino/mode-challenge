@@ -7,7 +7,7 @@ import { media } from '../../../theme';
 import { Column } from '../../atoms/Column';
 import { Title } from '../../atoms/Title';
 import { SendMoneyForm } from '../../organisms/SendMoneyForm';
-import { useCreateTransaction } from '../../../hooks';
+import { useCreateTransaction, useUiContext } from '../../../hooks';
 import { TransactionDto, Wallet, Transaction } from '../../../types';
 
 export interface SendMoneyProps {
@@ -41,12 +41,11 @@ const slideOutLeft = keyframes`
 `;
 
 const MediaColumn = styled(Column)`
-  background-color: #ffffff;
   @media (max-width: ${media.maxPhone}) {
-    position: absolute;
+    background-color: #ffffff;
+    position: fixed;
     bottom: 0;
     top: 0;
-    margin: 24px 0;
     z-index: 1;
     &.col-open {
       animation: ${slideInLeft} 0.3s forwards;
@@ -54,10 +53,12 @@ const MediaColumn = styled(Column)`
     &.col-closed {
       animation: ${slideOutLeft} 0.3s forwards;
     }
+    padding: 24px 4%;
   }
 `;
-// TODO: create context to handle form in mobile : sendMoneyFormStatus ("open" or "close"); closeSendMoneyForm
-export const SendMoney: React.FunctionComponent<SendMoneyProps> = ({ wallet = {} }) => {
+
+export const SendMoney: React.FunctionComponent<SendMoneyProps> = ({ wallet }) => {
+  const { modalStatus, toggleModal } = useUiContext();
   const queryClient = useQueryClient();
   const { mutate, isLoading } = useCreateTransaction<{ optimisticTransaction: Transaction }>({
     onMutate: async (variables) => {
@@ -81,6 +82,7 @@ export const SendMoney: React.FunctionComponent<SendMoneyProps> = ({ wallet = {}
       queryClient.setQueryData<Transaction[]>(['transactions', wallet.id], (old) =>
         old!.map((transaction) => (transaction.id === context?.optimisticTransaction.id ? result : transaction)),
       );
+      toggleModal();
     },
   });
 
@@ -89,14 +91,14 @@ export const SendMoney: React.FunctionComponent<SendMoneyProps> = ({ wallet = {}
   };
 
   const handleCancel = () => {
-    console.log('cancel');
+    toggleModal();
   };
 
   return (
-    <MediaColumn className="col-open">
+    <MediaColumn className={`col-${modalStatus}`}>
       <Title>Send Money</Title>
       <SendMoneyForm
-        amountLeft={wallet.balance}
+        amountLeft={wallet.balance || 0}
         isSubmitting={isLoading}
         onSubmit={handleSubmit}
         onCancel={handleCancel}

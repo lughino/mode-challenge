@@ -12,6 +12,7 @@ const Wrapper = styled.div`
   align-items: center;
   height: 56px;
   border-bottom: 1px solid ${colors.default};
+  padding: 4px;
 `;
 
 const LeftSide = styled.div`
@@ -31,7 +32,11 @@ const TextName = styled(Text)`
   margin-bottom: 6px;
 `;
 
-const Amount = styled(Text)`
+interface AmountProps {
+  type: TransactionType;
+}
+
+const Amount = styled(Text)<AmountProps>`
   font-weight: 700;
   color: ${(props) => (props.type === TransactionType.CREDIT ? colors.greenDark : colors.redDark)};
 `;

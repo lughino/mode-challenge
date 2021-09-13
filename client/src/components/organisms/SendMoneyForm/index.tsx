@@ -55,6 +55,26 @@ const CancelButton = styled(Button)`
   }
 `;
 
+const getValidationConstraints = (amountLeft: number, type: TransactionType): Record<string, unknown> => ({
+  amount: {
+    presence: true,
+    numericality: {
+      greaterThan: 0,
+      lessThanOrEqualTo: type === TransactionType.DEBIT ? amountLeft : undefined,
+      notGreaterThan: 'Please enter an amount greater than 0',
+      notLessThanOrEqualTo: `Please enter an amount less then or equal to ${currencyFormatter(amountLeft)}`,
+      notValid: 'Please enter a valid amount',
+      strict: true,
+    },
+  },
+  type: {
+    presence: true,
+    format: {
+      pattern: /^(debit|credit)$/,
+    },
+  },
+});
+
 export const SendMoneyForm: FunctionComponent<SendMoneyFormProps> = ({
   amountLeft,
   isSubmitting,
@@ -70,30 +90,11 @@ export const SendMoneyForm: FunctionComponent<SendMoneyFormProps> = ({
     },
   });
 
-  const constrains = {
-    amount: {
-      presence: true,
-      numericality: {
-        greaterThan: 0,
-        lessThanOrEqualTo: amountLeft,
-        notGreaterThan: 'Please enter an amount greater than 0',
-        notLessThanOrEqualTo: `Please enter an amount less then or equal to ${currencyFormatter(amountLeft)}`,
-        notValid: 'Please enter a valid amount',
-        strict: true,
-      },
-    },
-    type: {
-      presence: true,
-      format: {
-        pattern: /^(debit|credit)$/,
-      },
-    },
-  };
-
   const validateSingle = (field: string, value: unknown): string =>
-    validate.single(value, constrains[field as keyof typeof constrains]);
+    validate.single(value, getValidationConstraints(amountLeft, state.transaction.type)[field]);
 
-  const validateForm = (transaction: TransactionDto): boolean => validate(transaction, constrains);
+  const validateForm = (transaction: TransactionDto): boolean =>
+    validate(transaction, getValidationConstraints(amountLeft, transaction.type));
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;

@@ -13,7 +13,7 @@ const filenames = {
 
 const react = {
   files: ['*.jsx', '*.tsx'],
-  extends: ['airbnb', 'airbnb/hooks', 'next/core-web-vitals', 'prettier'],
+  extends: ['airbnb', 'airbnb/hooks', 'next', 'prettier'],
   rules: {
     'react/require-default-props': 0,
     'react/jsx-filename-extension': 0,
@@ -23,6 +23,7 @@ const react = {
     'react/jsx-boolean-value': 2,
     'react/jsx-handler-names': 2,
     'react/jsx-no-useless-fragment': 2,
+    '@next/next/no-html-link-for-pages': [2, './client/src/pages/'],
   },
 };
 

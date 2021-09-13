@@ -3,16 +3,16 @@ import { colors, media } from '../../../theme';
 
 export const Column = styled.div`
   position: relative;
-  padding: 24px 80px;
+  padding: 24px 60px;
   width: 100%;
   display: flex;
   flex-direction: column;
-  max-height: calc(100vh - 160px);
+  max-height: calc(100vh - 164px);
   &:nth-child(1) {
     border-right: 1px solid ${colors.default};
   }
   @media (max-width: ${media.maxPhone}) {
-    padding: 24px 4%;
+    padding: 0 4%;
     max-height: unset;
   }
 `;

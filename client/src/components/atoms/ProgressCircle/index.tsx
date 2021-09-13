@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-interface IProgressCircleProps {
+interface ProgressCircleProps {
   /**
    * The active color
    */
@@ -36,17 +36,17 @@ const ActiveCircle = styled.circle<{ duration: string | undefined }>`
   stroke-linecap: butt;
 `;
 
-export const ProgressCircle: React.SFC<IProgressCircleProps> = ({
-  activeColor,
-  backgroundColor,
-  duration,
-  progress,
-  sizeCircle,
+export const ProgressCircle: React.FunctionComponent<ProgressCircleProps> = ({
+  activeColor = '#FFB428',
+  backgroundColor = '#EAEAEE',
+  duration = '1s',
+  progress = 0,
+  sizeCircle = 80,
 }) => {
-  const radius = VIEWPORT - sizeCircle!;
+  const radius = VIEWPORT - sizeCircle;
   const perimeter = Math.round(Math.PI * radius * 2);
   const strokeDashoffset = Math.round(((100 - progress) / 100) * perimeter) || 0;
-  const offSet = sizeCircle!;
+  const offSet = sizeCircle;
   const viewBox = [-offSet, -offSet, (offSet + radius) * 2, (offSet + radius) * 2].join(' ');
   const transform = `rotate(-90 ${radius} ${radius})`;
 
@@ -66,12 +66,4 @@ export const ProgressCircle: React.SFC<IProgressCircleProps> = ({
       />
     </svg>
   );
-};
-
-ProgressCircle.defaultProps = {
-  activeColor: '#FFB428',
-  backgroundColor: '#EAEAEE',
-  duration: '1s',
-  progress: 0,
-  sizeCircle: 80,
 };

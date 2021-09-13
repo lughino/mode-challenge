@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { useQuery } from 'react-query';
 import { Transaction } from '../../types';
+import { API_URL } from '../../constants';
 
-const API_URL = 'http://localhost:3000';
 async function getTransactions(walletId: string): Promise<Transaction[]> {
   const { data } = await axios.get<Transaction[]>(`${API_URL}/transaction/wallet/${walletId}`);
 
