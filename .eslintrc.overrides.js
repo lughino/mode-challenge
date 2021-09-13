@@ -13,8 +13,9 @@ const filenames = {
 
 const react = {
   files: ['*.jsx', '*.tsx'],
-  extends: ['airbnb', 'airbnb/hooks', 'prettier'],
+  extends: ['airbnb', 'airbnb/hooks', 'next/core-web-vitals', 'prettier'],
   rules: {
+    'react/require-default-props': 0,
     'react/jsx-filename-extension': 0,
     'react/jsx-props-no-spreading': 0,
     'react/prop-types': 0,

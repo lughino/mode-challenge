@@ -17,7 +17,7 @@ export class TransactionService extends TransactionFor<TransactionService> {
   }
 
   async findByWalletId(walletId: string): Promise<Transaction[]> {
-    return this.transactionRepository.find({ where: { wallet: walletId } });
+    return this.transactionRepository.find({ where: { wallet: walletId }, order: { date: 'DESC' } });
   }
 
   async findById(transactionId: string): Promise<Transaction | undefined> {
