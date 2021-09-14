@@ -8,7 +8,16 @@
   "scripts": {
     "lint": "eslint . --fix",
     "prettier": "prettier . --write",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "build": "yarn workspaces run build",
+    "build:client": "yarn workspace client build",
+    "build:server": "yarn workspace server build",
+    "dev:client": "yarn workspace client dev",
+    "dev:server": "yarn workspace server dev",
+    "start:client": "yarn workspace client start",
+    "start:server": "yarn workspace server start",
+    "test:client": "yarn workspace client test",
+    "test:server": "yarn workspace server test"
   },
   "workspaces": {
     "packages": [

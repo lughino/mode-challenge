@@ -71,9 +71,9 @@ export const SendMoney: React.FunctionComponent<SendMoneyProps> = ({ wallet }) =
         type: variables.transactionDto.type,
       };
 
-      queryClient.setQueryData<Transaction[]>(['transactions', wallet.id], (old): Transaction[] => [
+      queryClient.setQueryData<Transaction[]>(['transactions', wallet.id], (old = []): Transaction[] => [
         optimisticTransaction,
-        ...old!,
+        ...old,
       ]);
       const newBalance =
         optimisticTransaction.type === TransactionType.DEBIT
@@ -81,8 +81,8 @@ export const SendMoney: React.FunctionComponent<SendMoneyProps> = ({ wallet }) =
           : wallet.balance + optimisticTransaction.amount;
       queryClient.setQueryData<Wallet>(
         ['wallet', wallet.id],
-        (oldWallet): Wallet => ({
-          ...oldWallet!,
+        (oldWallet = {} as Wallet): Wallet => ({
+          ...oldWallet,
           balance: newBalance,
         }),
       );
@@ -90,11 +90,12 @@ export const SendMoney: React.FunctionComponent<SendMoneyProps> = ({ wallet }) =
       return { optimisticTransaction, newBalance };
     },
     onSuccess: (result, variables, context) => {
-      queryClient.setQueryData<Transaction[]>(['transactions', wallet.id], (old) =>
-        old!.map((transaction) => (transaction.id === context?.optimisticTransaction.id ? result : transaction)),
+      queryClient.setQueryData<Transaction[]>(['transactions', wallet.id], (old = []) =>
+        old.map((transaction) => (transaction.id === context?.optimisticTransaction.id ? result : transaction)),
       );
-      queryClient.setQueryData<Wallet>(['wallet', wallet.id], (oldWallet) => ({
-        ...oldWallet!,
+      queryClient.setQueryData<Wallet>(['wallet', wallet.id], (oldWallet = {} as Wallet) => ({
+        ...oldWallet,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         balance: (result as any).wallet.balance,
       }));
       toggleModal();

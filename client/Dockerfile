@@ -4,6 +4,10 @@ FROM node as build
 
 RUN apk add --no-cache libc6-compat
 
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+ENV NEXT_TELEMETRY_DISABLED 1
+
 WORKDIR /usr/src/monorepo
 
 COPY package.json tsconfig.json yarn.lock webpack.base.js .eslintrc.js .eslintignore .eslintrc.overrides.js ./
@@ -16,10 +20,7 @@ FROM node as client
 
 WORKDIR /usr/src/app
 
-ARG NEXT_PUBLIC_API_URL
-ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
 ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
 
 RUN addgroup -g 1001 -S nodejs
 RUN adduser -S nextjs -u 1001

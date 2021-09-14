@@ -2,25 +2,22 @@ version: '3.8'
 services:
   server:
     build:
-      context: ./server
+      context: .
+      dockerfile: ./server/Dockerfile
     ports:
-      - "3000:3000"
-    container_name: modo-server
+      - '3000:3000'
+    container_name: mode-server
     volumes:
-      - ./server:usr/src/monorepo/server
-      - /usr/src/monorepo/node_modules
-  
+      - /usr/src/app/node_modules
+      - ./server/db:/usr/src/app/db
+
   client:
     build:
-      context: ./client
-      args:
-        - NEXT_PUBLIC_API_URL: "http://modo-server:3000"
+      context: .
+      dockerfile: ./client/Dockerfile
     ports:
-      - "4000:4000"
-    container_name: modo-client
+      - '4000:4000'
+    container_name: mode-client
     stdin_open: true
     volumes:
-      - ./client:usr/src/monorepo/client
-      - /usr/src/monorepo/node_modules
-    environment: 
-      NEXT_PUBLIC_API_URL: "http://modo-server:3000"
+      - /usr/src/app/node_modules

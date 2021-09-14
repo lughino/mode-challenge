@@ -1,6 +1,12 @@
+/* eslint-disable no-undef */
+// @ts-check
+
 /** @type {import('next').NextConfig} */
-// eslint-disable-next-line no-undef
 module.exports = {
+  pageExtensions: ['page.tsx', 'page.ts', 'page.jsx', 'page.js'],
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   reactStrictMode: true,
   webpack: (config, { isServer }) => {
     // Fixes npm packages that depend on `fs` module
